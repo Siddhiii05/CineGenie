@@ -60,7 +60,14 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API documentation for trending and upcoming movies",
     },
-    servers: [{ url: "http://localhost:5000" }],
+    servers: [
+      {
+        url:
+          process.env.NODE_ENV === "production"
+            ? "https://cinegenie-backend-api.onrender.com"
+            : "http://localhost:5000",
+      },
+    ],
   },
   apis: ["./routes/*.js"],
 };
