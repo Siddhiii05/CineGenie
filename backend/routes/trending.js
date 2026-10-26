@@ -1,6 +1,6 @@
 const { json } = require("body-parser");
 const router = require("express").Router();
-const TrendingData = require("../CustomData/TrendingData.json");
+const TrendingData = require("../CustomData/Trendingdata.json");
 
 router.get("/", (req, res) => {
   // Dummy trending data
