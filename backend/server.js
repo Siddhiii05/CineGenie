@@ -32,20 +32,22 @@ app.use(
 );
 
 // Session configuration
+
 app.use(
   session({
     name: "session",
-    secret: process.env.SESSION_SECRET || "development-session-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: false, // Local development over HTTP
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
+
 
 // Passport configuration
 app.use(passport.initialize());
