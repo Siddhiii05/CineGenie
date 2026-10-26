@@ -1,0 +1,917 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #19272e;
+  }
+  
+  
+/* ========================================
+   CineGenie Premium Header
+======================================== */
+
+.cine-header.MuiAppBar-root {
+  background: rgba(17, 17, 17, 0.94);
+  color: #f5f5f5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  z-index: 1100;
+}
+
+.cine-header-scrolled.MuiAppBar-root {
+  background: rgba(17, 17, 17, 0.98);
+  border-bottom-color: rgba(212, 175, 117, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cine-toolbar.MuiToolbar-root {
+  display: flex;
+  gap: 28px;
+  width: 100%;
+  min-height: 76px;
+  padding: 0 5%;
+}
+
+/* Brand */
+
+.cine-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+.cine-brand-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: #d4af75;
+  color: #151515;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.cine-brand-text {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  white-space: nowrap;
+}
+
+.cine-brand-text span {
+  color: #d4af75;
+}
+
+/* Navigation */
+
+.cine-navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cine-nav-link.MuiButton-root {
+  min-width: auto;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: #bcbcbc;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cine-nav-link.MuiButton-root:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #d4af75;
+}
+
+/* Search */
+
+.cine-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 440px;
+  height: 42px;
+  margin-left: auto;
+  padding: 0 10px 0 14px;
+  box-sizing: border-box;
+  border: 1px solid #303030;
+  border-radius: 12px;
+  background: #1b1b1b;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cine-search:focus-within {
+  border-color: rgba(212, 175, 117, 0.7);
+  background: #202020;
+  box-shadow: 0 0 0 3px rgba(212, 175, 117, 0.08);
+}
+
+.cine-search-icon {
+  flex-shrink: 0;
+  color: #888;
+  font-size: 20px !important;
+}
+
+.cine-search-input.MuiFormControl-root {
+  flex: 1;
+  min-width: 0;
+}
+
+.cine-search-input .MuiInputBase-root {
+  color: #f5f5f5;
+  font-size: 13px;
+}
+
+.cine-search-input .MuiInputBase-input {
+  padding: 8px 0;
+}
+
+.cine-search-input .MuiInputBase-input::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+.cine-search-submit {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #d4af75;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cine-search-submit:hover:not(:disabled) {
+  background: #d4af75;
+  color: #151515;
+}
+
+.cine-search-submit:disabled {
+  color: #555;
+  cursor: not-allowed;
+}
+
+.cine-search-submit .MuiSvgIcon-root {
+  font-size: 19px;
+}
+
+/* Account controls */
+
+.cine-account {
+  display: flex !important;
+  align-items: center;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  position: relative;
+  z-index: 1200;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.cine-account-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #e8e8e8;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cine-account-button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cine-account-button .MuiSvgIcon-root {
+  color: #d4af75;
+  font-size: 25px;
+}
+
+.cine-account-name {
+  max-width: 100px;
+  overflow: hidden;
+  color: #d5d5d5;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cine-login-button.MuiButton-root {
+  min-height: 38px;
+  padding: 8px 15px;
+  border: 1px solid rgba(212, 175, 117, 0.55);
+  border-radius: 10px;
+  background: rgba(212, 175, 117, 0.08);
+  color: #e1c18d;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cine-login-button.MuiButton-root:hover {
+  border-color: #d4af75;
+  background: #d4af75;
+  color: #151515;
+}
+
+.cine-login-button .MuiButton-startIcon {
+  margin-right: 6px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 1000px) {
+  .cine-toolbar.MuiToolbar-root {
+    gap: 16px;
+    padding: 0 3%;
+  }
+
+  .cine-brand-text {
+    font-size: 20px;
+  }
+
+  .cine-navigation {
+    gap: 0;
+  }
+
+  .cine-nav-link.MuiButton-root {
+    padding: 8px;
+  }
+
+  .cine-account {
+    gap: 6px;
+  }
+
+  .cine-account-name {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .cine-toolbar.MuiToolbar-root {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  min-height: 76px;
+  padding: 0 5%;
+  box-sizing: border-box;
+}
+
+  .cine-brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 19px;
+  }
+
+  .cine-brand-text {
+    font-size: 19px;
+  }
+
+  .cine-navigation {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+  }
+
+  .cine-nav-link.MuiButton-root {
+    flex: 1;
+    font-size: 12px;
+  }
+
+  .cine-search {
+    order: 2;
+    flex-basis: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .cine-account {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .cine-login-button.MuiButton-root {
+    min-height: 34px;
+    padding: 6px 10px;
+  }
+
+  .cine-account-button {
+    padding: 5px;
+  }
+
+  .cine-account-button .MuiSvgIcon-root {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .cine-toolbar.MuiToolbar-root {
+    gap: 10px;
+  }
+
+  .cine-brand-text {
+    font-size: 17px;
+  }
+
+  .cine-brand-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .cine-login-button.MuiButton-root {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
+
+
+/* ========================================
+   CineGenie Premium Footer
+======================================== */
+
+.cine-footer {
+  width: 100%;
+  margin-top: 80px;
+  padding: 52px 6% 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #151515;
+  color: #f5f5f5;
+}
+
+.cine-footer-content {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(280px, 1.5fr);
+  gap: 60px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* Footer navigation */
+
+.cine-footer-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cine-footer-heading.MuiTypography-root {
+  margin-bottom: 12px;
+  color: #d4af75;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.cine-footer-welcome {
+  margin: 0 0 8px;
+  color: #bcbcbc;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.cine-footer-link.MuiButton-root {
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 5px 0;
+  color: #bcbcbc;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+  text-transform: none;
+  transition: color 0.2s ease;
+}
+
+.cine-footer-link.MuiButton-root:hover {
+  background: transparent;
+  color: #d4af75;
+}
+
+/* Footer search */
+
+.cine-footer-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+  height: 42px;
+  margin-top: 12px;
+  padding: 0 10px 0 13px;
+  border: 1px solid #353535;
+  border-radius: 10px;
+  background: #202020;
+  transition: border-color 0.2s ease;
+}
+
+.cine-footer-search:focus-within {
+  border-color: rgba(212, 175, 117, 0.7);
+}
+
+.cine-footer-search-input.MuiFormControl-root {
+  flex: 1;
+  min-width: 0;
+}
+
+.cine-footer-search-input .MuiInputBase-root {
+  color: #f5f5f5;
+  font-size: 13px;
+}
+
+.cine-footer-search-input .MuiInputBase-input {
+  padding: 8px 0;
+}
+
+.cine-footer-search-input .MuiInputBase-input::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+.cine-footer-search-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #d4af75;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cine-footer-search-button:hover:not(:disabled) {
+  background: #d4af75;
+  color: #151515;
+}
+
+.cine-footer-search-button:disabled {
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Footer branding */
+
+.cine-footer-brand-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cine-footer-brand {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f5f5f5;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -1px;
+  cursor: pointer;
+}
+
+.cine-footer-brand span {
+  color: #d4af75;
+}
+
+.cine-footer-description {
+  margin: 12px 0 24px;
+  color: #999;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Social icons */
+
+.cine-footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.cine-footer-socials a {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #353535;
+  border-radius: 12px;
+  background: #202020;
+  color: #c4c4c4;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cine-footer-socials a:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 117, 0.6);
+  background: rgba(212, 175, 117, 0.08);
+  color: #d4af75;
+}
+
+.cine-footer-socials .MuiSvgIcon-root {
+  font-size: 21px;
+}
+
+/* Copyright */
+
+.cine-footer-copyright.MuiTypography-root {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  color: #777;
+  font-size: 11px;
+}
+
+/* Responsive footer */
+
+@media (max-width: 700px) {
+  .cine-footer {
+    margin-top: 52px;
+    padding: 38px 6% 22px;
+  }
+
+  .cine-footer-content {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .cine-footer-navigation {
+    align-items: center;
+    text-align: center;
+  }
+
+  .cine-footer-link.MuiButton-root {
+    justify-content: center;
+  }
+
+  .cine-footer-search {
+    max-width: 360px;
+  }
+
+  .cine-footer-brand {
+    font-size: 27px;
+  }
+
+  .cine-footer-copyright.MuiTypography-root {
+    margin-top: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-footer-socials a,
+  .cine-footer-link.MuiButton-root,
+  .cine-footer-search-button {
+    transition: none;
+  }
+
+  .cine-footer-socials a:hover {
+    transform: none;
+  }
+}
+
+
+/* =========================================
+   CINeGENIE LANDING HERO
+========================================= */
+
+.landing-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  width: 100%;
+  min-height: 82vh;
+  padding: 90px 8%;
+  margin-top: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 80% 45%,
+      rgba(212, 175, 55, 0.09),
+      transparent 32%
+    ),
+    #111111;
+  color: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.landing-hero-content {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 55%;
+  max-width: 660px;
+}
+
+.landing-eyebrow {
+  margin: 0 0 24px !important;
+  color: #d4af37;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 3px !important;
+  line-height: 1.6 !important;
+}
+
+.landing-title.MuiTypography-root {
+  margin: 0;
+  color: #f5f5f5;
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -2px;
+}
+
+.landing-title span {
+  display: block;
+  color: #d4af37;
+}
+
+.landing-description.MuiTypography-root {
+  max-width: 540px;
+  margin-top: 28px;
+  color: #b4b4b4;
+  font-size: 1.08rem;
+  line-height: 1.9;
+  letter-spacing: 0.1px;
+}
+
+.landing-cta.MuiButton-root {
+  min-height: 52px;
+  margin-top: 34px;
+  padding: 0 28px;
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  background-color: #d4af37;
+  color: #111111;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: none;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.landing-cta.MuiButton-root:hover {
+  background-color: transparent;
+  color: #d4af37;
+  transform: translateY(-2px);
+}
+
+.landing-caption {
+  margin-top: 20px;
+  color: #777777;
+  font-size: 0.84rem;
+  letter-spacing: 0.3px;
+}
+
+.landing-hero-visual {
+  position: relative;
+  display: flex;
+  flex: 1 1 45%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 400px;
+}
+
+.landing-image-glow {
+  position: absolute;
+  width: 75%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.08);
+  filter: blur(65px);
+}
+
+.landing-hero-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  max-height: 480px;
+  object-fit: contain;
+}
+
+.landing-floating-card {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  max-width: calc(100% - 20px);
+  padding: 17px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(28, 28, 28, 0.9);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+
+.landing-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  color: #d4af37;
+  font-size: 1.35rem;
+}
+
+.landing-card-title {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.landing-card-subtitle {
+  margin: 5px 0 0;
+  color: #999999;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .landing-hero {
+    gap: 24px;
+    padding: 75px 6%;
+  }
+
+  .landing-title.MuiTypography-root {
+    font-size: clamp(2.6rem, 6vw, 4rem);
+  }
+
+  .landing-description.MuiTypography-root {
+    font-size: 1rem;
+  }
+
+  .landing-hero-visual {
+    min-height: 320px;
+  }
+
+  .landing-floating-card {
+    right: 0;
+    bottom: 15px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .landing-hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    min-height: auto;
+    padding: 65px 7% 55px;
+  }
+
+  .landing-hero-content {
+    max-width: 100%;
+  }
+
+  .landing-eyebrow {
+    margin-bottom: 18px !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  .landing-title.MuiTypography-root {
+    font-size: clamp(2.5rem, 11vw, 4rem);
+    letter-spacing: -1.5px;
+  }
+
+  .landing-description.MuiTypography-root {
+    margin-top: 20px;
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .landing-cta.MuiButton-root {
+    margin-top: 26px;
+  }
+
+  .landing-hero-visual {
+    width: 100%;
+    min-height: 280px;
+  }
+
+  .landing-hero-image {
+    max-height: 310px;
+  }
+
+  .landing-floating-card {
+    right: 0;
+    bottom: 0;
+    padding: 12px 14px;
+  }
+
+  .landing-card-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-cta.MuiButton-root {
+    transition: none;
+  }
+}
+
+
+
+/* Fix navbar layout and keep account controls visible */
+.cine-toolbar.MuiToolbar-root {
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.cine-search {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  margin-left: auto;
+}
+
+/* .cine-account {
+  display: flex !important;
+  align-items: center;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  position: relative;
+  z-index: 1200;
+  visibility: visible !important;
+  opacity: 1 !important;
+} */
+
+.cine-login-button.MuiButton-root {
+  display: inline-flex !important;
+  flex-shrink: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1201;
+}

@@ -1,0 +1,81 @@
+/* ========================================
+   CineGenie — Premium Gradient Background
+======================================== */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #0b0b0d;
+}
+
+body {
+  min-height: 100vh;
+  color: #f5f5f5;
+  font-family: "Poppins", sans-serif;
+}
+
+.app {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #f5f5f5;
+
+  background:
+    radial-gradient(
+      ellipse at 15% 0%,
+      rgba(124, 78, 35, 0.18) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 90% 35%,
+      rgba(82, 48, 104, 0.12) 0%,
+      transparent 42%
+    ),
+    linear-gradient(
+      135deg,
+      #101012 0%,
+      #151416 45%,
+      #0b0b0d 100%
+    );
+
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  overflow-x: clip;
+}
+
+.app-main {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* Remove unwanted space before the footer */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1 0 auto;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.app > footer,
+.app footer {
+  margin-top: 0;
+}
