@@ -3,7 +3,7 @@ require("dotenv").config();
 const session = require("express-session");
 const express = require("express");
 const cors = require("cors");
-require("./Passport");
+require("./passport");
 
 const passport = require("passport");
 const authRoute = require("./routes/auth");
@@ -21,9 +21,11 @@ const app = express();
 app.use(express.json());
 
 // CORS configuration
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: CLIENT_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -73,7 +75,7 @@ app.use("/upcoming", upcomingRoute);
 
 app.get("/recomm/:id", function (req, res) {
   request(
-    `http://127.0.0.1:5000/movie/${req.params.id}`,
+    `${process.env.RECOMMENDATION_API_URL || "http://127.0.0.1:5001"}/movie/${encodeURIComponent(req.params.id)}`,
     function (error, response, body) {
       if (error) {
         return res.status(500).json({ error: "Failed to fetch recommendations" });
@@ -89,6 +91,8 @@ app.get("/", (req, res) => {
 });
 
 // Start server
-app.listen(5000, () => {
-  console.log("Server is running on PORT 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

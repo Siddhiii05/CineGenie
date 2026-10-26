@@ -1,136 +1,179 @@
-from sklearn.metrics.pairwise import cosine_similarity
+import ast
+import os
+from pathlib import Path
+
+import pandas as pd
+from flask import Flask, jsonify
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import CountVectorizer
-from unittest import result
-from flask import Flask, jsonify
-
-
-import numpy as np
-import pandas as pd
-import ast
-import nltk
-import sys
-
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
+# File paths
+BASE_DIR = Path(__file__).resolve().parent
+
+# Initialize the stemmer
+ps = PorterStemmer()
+
 
 def convert(obj):
-    L = []
-    for i in ast.literal_eval(obj):
-        L.append(i['name'])
-    return L
+    """Extract names from genres or keywords."""
+    items = []
+    for item in ast.literal_eval(obj):
+        items.append(item["name"])
+    return items
 
 
 def convert3(obj):
-    L = []
-    counter = 0
-    for i in ast.literal_eval(obj):
-        if counter != 3:
-            L.append(i['name'])
-            counter += 1
-        else:
-            break
-    return L
+    """Extract the first three cast members."""
+    items = []
+    for item in ast.literal_eval(obj)[:3]:
+        items.append(item["name"])
+    return items
 
 
 def fetch_director(obj):
-    L = []
-    for i in ast.literal_eval(obj):
-        if i['job'] == 'Director':
-            L.append(i['name'])
+    """Extract the director's name."""
+    items = []
+    for item in ast.literal_eval(obj):
+        if item["job"] == "Director":
+            items.append(item["name"])
             break
-    return L
+    return items
 
 
 def stem(text):
-    y = []
-    for i in text.split():
-        y.append(ps.stem(i))
-    return " ".join(y)
+    """Apply stemming to the movie tags."""
+    words = []
+    for word in text.split():
+        words.append(ps.stem(word))
+    return " ".join(words)
 
 
-# read movies and credit .csv file
-movies = pd.read_csv('tmdb_5000_movies.csv')
-credits = pd.read_csv('tmdb_5000_credits.csv')
+# Load movie and credits datasets
+movies_path = BASE_DIR / "tmdb_5000_movies.csv"
+credits_path = BASE_DIR / "tmdb_5000_credits.csv"
 
-# merge both csv file on the basis of movie_id
-movies = movies.merge(credits, on='movie_id')
+movies = pd.read_csv(movies_path)
+credits = pd.read_csv(credits_path)
 
-movies.rename(columns={'title_x': 'title'}, inplace=True)
-movies.drop('title_y', inplace=True, axis=1)
+# Merge datasets using the movie ID
+movies = movies.merge(credits, on="movie_id")
 
+# Standardize the title column
+movies.rename(columns={"title_x": "title"}, inplace=True)
+movies.drop("title_y", axis=1, inplace=True)
 
-# only put selected column in group which will help us forming recommendation system
-movies = movies[['movie_id', 'title', 'overview',
-                 'genres', 'keywords', 'cast', 'crew']]
+# Select relevant columns
+movies = movies[
+    [
+        "movie_id",
+        "title",
+        "overview",
+        "genres",
+        "keywords",
+        "cast",
+        "crew",
+    ]
+]
 
-movies.isnull().sum()
-movies.dropna(inplace=True)  # drop duplicate items
+# Remove rows with missing values
+movies.dropna(inplace=True)
 
-movies.duplicated().sum()
+# Extract useful information
+movies["genres"] = movies["genres"].apply(convert)
+movies["keywords"] = movies["keywords"].apply(convert)
+movies["cast"] = movies["cast"].apply(convert3)
+movies["crew"] = movies["crew"].apply(fetch_director)
 
+# Convert overview into a list of words
+movies["overview"] = movies["overview"].apply(lambda x: x.split())
 
-movies['genres'] = movies['genres'].apply(convert)
-movies['keywords'] = movies['keywords'].apply(convert)
-movies['cast'] = movies['cast'].apply(convert3)
-movies['crew'] = movies['crew'].apply(fetch_director)
+# Remove spaces from names so related terms are treated consistently
+movies["genres"] = movies["genres"].apply(
+    lambda items: [item.replace(" ", "") for item in items]
+)
 
+movies["cast"] = movies["cast"].apply(
+    lambda items: [item.replace(" ", "") for item in items]
+)
 
-movies['overview'] = movies['overview'].apply(lambda x: x.split())
-movies['genres'] = movies['genres'].apply(
-    lambda x: [i.replace(" ", "") for i in x])  # remove space from each word
-movies['cast'] = movies['cast'].apply(
-    lambda x: [i.replace(" ", "") for i in x])
-movies['overview'] = movies['overview'].apply(
-    lambda x: [i.replace(" ", "") for i in x])
-movies['crew'] = movies['crew'].apply(
-    lambda x: [i.replace(" ", "") for i in x])
-movies['keywords'] = movies['keywords'].apply(
-    lambda x: [i.replace(" ", "") for i in x])
+movies["overview"] = movies["overview"].apply(
+    lambda items: [item.replace(" ", "") for item in items]
+)
 
-movies['tags'] = movies['overview']+movies['genres'] + \
-    movies['keywords']+movies['cast']+movies['crew']
+movies["crew"] = movies["crew"].apply(
+    lambda items: [item.replace(" ", "") for item in items]
+)
 
+movies["keywords"] = movies["keywords"].apply(
+    lambda items: [item.replace(" ", "") for item in items]
+)
 
-new_df = movies[['movie_id', 'title', 'tags']]
+# Combine movie information into tags
+movies["tags"] = (
+    movies["overview"]
+    + movies["genres"]
+    + movies["keywords"]
+    + movies["cast"]
+    + movies["crew"]
+)
 
-new_df['tags'] = new_df['tags'].apply(lambda x: " ".join(x))
+# Create the final recommendation dataset
+new_df = movies[["movie_id", "title", "tags"]].copy()
 
+new_df["tags"] = new_df["tags"].apply(lambda items: " ".join(items))
 
-cv = CountVectorizer(max_features=5000, stop_words='english')
-vectors = cv.fit_transform(new_df['tags']).toarray()
-cv.get_feature_names()
-ps = PorterStemmer()
+# Convert tags into numerical vectors
+cv = CountVectorizer(max_features=5000, stop_words="english")
+vectors = cv.fit_transform(new_df["tags"])
 
-new_df['tags'] = new_df['tags'].apply(stem)
+# Apply stemming to tags
+new_df["tags"] = new_df["tags"].apply(stem)
 
+# Calculate cosine similarity between movies
 similarity = cosine_similarity(vectors)
 
 
-@app.route('/movie/<string:movie>', methods=['GET'])
+@app.route("/movie/<string:movie>", methods=["GET"])
 def recommend(movie):
-    movie_index = new_df[new_df['title'] == movie].index[0]
+    """Return the five most similar movies."""
+
+    # Find the requested movie
+    matched_movies = new_df[
+        new_df["title"].str.casefold() == movie.strip().casefold()
+    ]
+
+    if matched_movies.empty:
+        return jsonify({"error": f"Movie '{movie}' was not found."}), 404
+
+    movie_index = matched_movies.index[0]
+
+    # Calculate similarity scores and rank movies
     distances = similarity[movie_index]
-    moviesList = sorted(list(enumerate(distances)),
-                        reverse=True, key=lambda x: x[1])[1:6]
-    mv1 = str(new_df.iloc[moviesList[0][0]].movie_id)
-    mv2 = str(new_df.iloc[moviesList[1][0]].movie_id)
-    mv3 = str(new_df.iloc[moviesList[2][0]].movie_id)
-    mv4 = str(new_df.iloc[moviesList[3][0]].movie_id)
-    mv5 = str(new_df.iloc[moviesList[4][0]].movie_id)
-    result = {
-        "movie_name1": mv1,
-        "movie_name2": mv2,
-        "movie_name3": mv3,
-        "movie_name4": mv4,
-        "movie_name5": mv5,
-    }
 
-    return jsonify(result)
+    movies_list = sorted(
+        enumerate(distances),
+        reverse=True,
+        key=lambda item: item[1],
+    )[1:6]
 
-    # for i in moviesList:
-    #     print(new_df.iloc[i[0]].title)
-# recommend("Hulk")
+    # Return recommended movie IDs
+    recommendations = {}
+
+    for index, item in enumerate(movies_list, start=1):
+        movie_id = new_df.iloc[item[0]]["movie_id"]
+        recommendations[f"movie_name{index}"] = str(movie_id)
+
+    return jsonify(recommendations)
+
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "CineGenie recommendation API is running!"})
+
+
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port, debug=False)
