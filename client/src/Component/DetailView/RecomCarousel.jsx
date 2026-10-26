@@ -7,7 +7,7 @@ import AliceCarousel from "react-alice-carousel";
 import Axios from "axios";
 import { img_300 } from "../../Config/Config";
 import { useNavigate, useParams } from "react-router-dom";
-import API_BASE_URL from "/../Config/api";
+import API_BASE_URL from "../../Config/api";
 const handleDragStart = (event) => event.preventDefault();
 
 const TMDB_API_KEY = "b9e11d2c8939104a4a755544e4eb8847";
