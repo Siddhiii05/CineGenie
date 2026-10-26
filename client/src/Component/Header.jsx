@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AppBar, Button, TextField, Toolbar } from "@material-ui/core";
-
+import API_BASE_URL from "../Config/api";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +47,7 @@ export default function Header({ user, onLogout }) {
   // Log out the current user.
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/logout", {
+      const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         method: "GET",
         credentials: "include",
         headers: {

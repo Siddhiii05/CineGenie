@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useEffect, useState } from "react";
 import "./App.css";
 
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
+import API_BASE_URL from "./Config/api";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import CastDetail from "./Pages/CastDetail";
@@ -26,7 +26,7 @@ function App() {
   const getUser = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/login/success",
+        `${API_BASE_URL}/auth/login/success`,
         {
           method: "GET",
           credentials: "include",

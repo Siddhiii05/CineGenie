@@ -13,3 +13,4 @@ export const unavailableLandscape =
 // Fallback image for carousels
 export const noPicture =
   "https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg";
+

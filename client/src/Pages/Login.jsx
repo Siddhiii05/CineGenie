@@ -1,8 +1,9 @@
 import React from "react";
+import API_BASE_URL from "../Config/api";
 
 const Login = () => {
   const google = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+    window.open(`${API_BASE_URL}/auth/google`, "_self");
   };
 
   return (

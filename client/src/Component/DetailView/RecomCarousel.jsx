@@ -7,7 +7,7 @@ import AliceCarousel from "react-alice-carousel";
 import Axios from "axios";
 import { img_300 } from "../../Config/Config";
 import { useNavigate, useParams } from "react-router-dom";
-
+import API_BASE_URL from "/../Config/api";
 const handleDragStart = (event) => event.preventDefault();
 
 const TMDB_API_KEY = "b9e11d2c8939104a4a755544e4eb8847";
@@ -167,7 +167,7 @@ const RecomCarousel = () => {
 
       // Get recommended movie IDs from your backend.
       const { data } = await Axios.get(
-        `http://localhost:5000/recomm/${encodeURIComponent(title)}`
+        `${API_BASE_URL}/recomm/${encodeURIComponent(title)}`
       );
 
       // Support the existing backend response format:
