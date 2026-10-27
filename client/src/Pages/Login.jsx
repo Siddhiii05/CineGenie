@@ -3,8 +3,8 @@ import API_BASE_URL from "../Config/api";
 
 const Login = () => {
   const google = () => {
-    window.open(`${API_BASE_URL}/auth/google`, "_self");
-  };
+  window.location.href = `${API_BASE_URL}/auth/google`;  
+};
 
   return (
     <>

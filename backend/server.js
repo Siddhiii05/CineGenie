@@ -17,6 +17,8 @@ const swaggerJsDoc = require("swagger-jsdoc");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Parse JSON request bodies
 app.use(express.json());
 
