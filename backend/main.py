@@ -12,58 +12,98 @@ app = Flask(__name__)
 
 # File paths
 BASE_DIR = Path(__file__).resolve().parent
+movies_path = BASE_DIR / "tmdb_5000_movies.csv"
+credits_path = BASE_DIR / "tmdb_5000_credits.csv"
 
 # Initialize the stemmer
 ps = PorterStemmer()
 
 
+
 def convert(obj):
-    """Extract names from genres or keywords."""
-    items = []
-    for item in ast.literal_eval(obj):
-        items.append(item["name"])
-    return items
+    """Extract names from genres or keywords safely."""
+    try:
+        return [
+            item["name"]
+            for item in ast.literal_eval(obj)
+        ]
+    except (ValueError, SyntaxError, TypeError, KeyError):
+        return []
 
 
 def convert3(obj):
-    """Extract the first three cast members."""
-    items = []
-    for item in ast.literal_eval(obj)[:3]:
-        items.append(item["name"])
-    return items
+    """Extract the first three cast members safely."""
+    try:
+        return [
+            item["name"]
+            for item in ast.literal_eval(obj)[:3]
+        ]
+    except (ValueError, SyntaxError, TypeError, KeyError):
+        return []
+
 
 
 def fetch_director(obj):
-    """Extract the director's name."""
-    items = []
-    for item in ast.literal_eval(obj):
-        if item["job"] == "Director":
-            items.append(item["name"])
-            break
-    return items
+    """Extract the director's name safely."""
+    try:
+        crew = ast.literal_eval(obj)
+
+        for item in crew:
+            if item.get("job") == "Director":
+                return [item["name"]]
+
+    except (ValueError, SyntaxError, TypeError, AttributeError):
+        return []
+
+    return []
 
 
 def stem(text):
-    """Apply stemming to the movie tags."""
-    words = []
-    for word in text.split():
-        words.append(ps.stem(word))
-    return " ".join(words)
+    """Apply stemming to movie tags."""
+    return " ".join(ps.stem(word) for word in text.split())
 
 
-# Load movie and credits datasets
-movies_path = BASE_DIR / "tmdb_5000_movies.csv"
-credits_path = BASE_DIR / "tmdb_5000_credits.csv"
+# Load datasets
+movies = pd.read_csv(movies_path, low_memory=False)
 
-movies = pd.read_csv(movies_path)
-credits = pd.read_csv(credits_path)
+credits = pd.read_csv(
+    credits_path,
+    usecols=["movie_id", "title", "casts", "crew"],
+    low_memory=False,
+)
 
-# Merge datasets using the movie ID
-movies = movies.merge(credits, on="movie_id")
+# Rename 'casts' to 'cast' to match the recommendation code
+credits.rename(columns={"casts": "cast"}, inplace=True)
 
-# Standardize the title column
+# Ensure movie IDs have the same data type
+movies["movie_id"] = pd.to_numeric(
+    movies["movie_id"], errors="coerce"
+)
+
+credits["movie_id"] = pd.to_numeric(
+    credits["movie_id"], errors="coerce"
+)
+
+# Remove rows with invalid movie IDs
+movies.dropna(subset=["movie_id"], inplace=True)
+credits.dropna(subset=["movie_id"], inplace=True)
+
+movies["movie_id"] = movies["movie_id"].astype("int64")
+credits["movie_id"] = credits["movie_id"].astype("int64")
+
+# Merge movie and credits datasets
+movies = movies.merge(
+    credits[["movie_id", "cast", "crew"]],
+    on="movie_id",
+    how="inner",
+)
+
+# Keep the original movie title
 movies.rename(columns={"title_x": "title"}, inplace=True)
-movies.drop("title_y", axis=1, inplace=True)
+
+# Remove duplicate title column if it exists
+if "title_y" in movies.columns:
+    movies.drop(columns=["title_y"], inplace=True)
 
 # Select relevant columns
 movies = movies[
@@ -76,7 +116,7 @@ movies = movies[
         "cast",
         "crew",
     ]
-]
+].copy()
 
 # Remove rows with missing values
 movies.dropna(inplace=True)
@@ -91,23 +131,14 @@ movies["crew"] = movies["crew"].apply(fetch_director)
 movies["overview"] = movies["overview"].apply(lambda x: x.split())
 
 # Remove spaces from names so related terms are treated consistently
-movies["genres"] = movies["genres"].apply(
-    lambda items: [item.replace(" ", "") for item in items]
-)
-
-movies["cast"] = movies["cast"].apply(
-    lambda items: [item.replace(" ", "") for item in items]
-)
+for column in ["genres", "keywords", "cast", "crew"]:
+    movies[column] = movies[column].apply(
+        lambda items: [
+            item.replace(" ", "") for item in items
+        ]
+    )
 
 movies["overview"] = movies["overview"].apply(
-    lambda items: [item.replace(" ", "") for item in items]
-)
-
-movies["crew"] = movies["crew"].apply(
-    lambda items: [item.replace(" ", "") for item in items]
-)
-
-movies["keywords"] = movies["keywords"].apply(
     lambda items: [item.replace(" ", "") for item in items]
 )
 
@@ -123,10 +154,16 @@ movies["tags"] = (
 # Create the final recommendation dataset
 new_df = movies[["movie_id", "title", "tags"]].copy()
 
-new_df["tags"] = new_df["tags"].apply(lambda items: " ".join(items))
+new_df["tags"] = new_df["tags"].apply(
+    lambda items: " ".join(items)
+)
 
 # Convert tags into numerical vectors
-cv = CountVectorizer(max_features=5000, stop_words="english")
+cv = CountVectorizer(
+    max_features=5000,
+    stop_words="english",
+)
+
 vectors = cv.fit_transform(new_df["tags"])
 
 # Apply stemming to tags
@@ -140,19 +177,23 @@ similarity = cosine_similarity(vectors)
 def recommend(movie):
     """Return the five most similar movies."""
 
-    # Find the requested movie
+    # Find the requested movie, ignoring capitalization
     matched_movies = new_df[
-        new_df["title"].str.casefold() == movie.strip().casefold()
+        new_df["title"].str.casefold()
+        == movie.strip().casefold()
     ]
 
     if matched_movies.empty:
-        return jsonify({"error": f"Movie '{movie}' was not found."}), 404
+        return jsonify({
+            "error": f"Movie '{movie}' was not found."
+        }), 404
 
     movie_index = matched_movies.index[0]
 
-    # Calculate similarity scores and rank movies
+    # Get similarity scores for the selected movie
     distances = similarity[movie_index]
 
+    # Rank movies by similarity and exclude the selected movie
     movies_list = sorted(
         enumerate(distances),
         reverse=True,
@@ -171,7 +212,9 @@ def recommend(movie):
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "CineGenie recommendation API is running!"})
+    return jsonify({
+        "message": "CineGenie recommendation API is running!"
+    })
 
 
 if __name__ == "__main__":
